@@ -18,6 +18,9 @@ jobs:
     if: github.repository_owner == 'finos'
     outputs:
       digest: ${{ steps.build_publish.outputs.digest }}
+    env:
+      COMMIT_ID: ${{ github.sha }}
+      COMMIT_BRANCH: ${{ github.ref }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -42,6 +45,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            COMMIT_ID=${COMMIT_ID}
+            COMMIT_BRANCH=${COMMIT_BRANCH}
   
   publish_to_ecs:
     name: Update ECS Cluster
